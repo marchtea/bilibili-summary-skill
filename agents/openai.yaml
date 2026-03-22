@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bilibili Summary"
+  short_description: "Fetch Bilibili transcript and summarize it"
+  default_prompt: "Fetch a Bilibili video transcript, fall back to ASR if needed, and produce a structured summary"
