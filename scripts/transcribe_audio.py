@@ -20,8 +20,7 @@ def parse_args():
     )
     parser.add_argument(
         "--language",
-        default="zh",
-        help="Language code to guide transcription (default: zh)",
+        help="Optional language code such as zh or en. If omitted, faster-whisper auto-detects it.",
     )
     parser.add_argument(
         "--compute-type",
@@ -55,12 +54,14 @@ def main():
         device=args.device,
         compute_type=args.compute_type,
     )
-    segments, info = model.transcribe(
-        str(audio_path),
-        language=args.language,
-        vad_filter=True,
-        beam_size=1,
-    )
+    transcribe_kwargs = {
+        "vad_filter": True,
+        "beam_size": 1,
+    }
+    if args.language:
+        transcribe_kwargs["language"] = args.language
+
+    segments, info = model.transcribe(str(audio_path), **transcribe_kwargs)
 
     lines = []
     for segment in segments:

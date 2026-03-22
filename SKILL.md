@@ -52,6 +52,7 @@ Check availability with:
 command -v yt-dlp
 command -v ffmpeg
 python3 --version
+python3 -c "import faster_whisper"
 ```
 
 If `yt-dlp` is missing, explain that the skill cannot fetch Bilibili content directly until it is installed.
@@ -105,14 +106,14 @@ If no subtitle file exists:
 Use the bundled ASR helper when `faster-whisper` is installed in the active Python environment:
 
 ```bash
-python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/asr-transcript.txt
+python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/transcript.txt
 ```
 
 Example:
 
 ```bash
 bash "$SKILL_DIR/scripts/fetch_bilibili_artifacts.sh" "<bilibili-url>" /tmp/bili-job --with-audio
-python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/asr-transcript.txt
+python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/transcript.txt
 ```
 
 If no ASR tool is available, stop and tell the user exactly which dependency is missing instead of pretending the transcript is complete.
@@ -216,7 +217,7 @@ Turns `.vtt`, `.srt`, or `.json3` subtitle files into clean plain text, with opt
 
 ### `scripts/transcribe_audio.py`
 
-Runs `faster-whisper` on a downloaded audio file and writes a timestamped transcript.
+Runs `faster-whisper` on a downloaded audio file, auto-detects language by default, and writes a timestamped transcript.
 
 ### `scripts/inspect_metadata.py`
 
