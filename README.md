@@ -19,11 +19,14 @@ A Codex skill for fetching Bilibili video text and producing structured summarie
 ├── SKILL.md
 ├── agents/
 │   └── openai.yaml
-└── scripts/
-    ├── fetch_bilibili_artifacts.sh
-    ├── inspect_metadata.py
-    └── normalize_transcript.py
-    └── transcribe_audio.py
+├── scripts/
+│   ├── fetch_bilibili_artifacts.sh
+│   ├── inspect_metadata.py
+│   ├── normalize_transcript.py
+│   └── transcribe_audio.py
+└── tests/
+    ├── fixtures/
+    └── smoke_test.sh
 ```
 
 ## Install
@@ -43,3 +46,11 @@ npx skills add https://github.com/marchtea/bilibili-summary-skill --skill bilibi
 
 - `danmaku.xml` is not treated as transcript text
 - ASR fallback is supported by workflow through `scripts/transcribe_audio.py`
+
+## Verification
+
+```bash
+bash tests/smoke_test.sh
+```
+
+The smoke test validates fixture-based metadata parsing, VTT normalization, JSON3 normalization, and helper-script syntax without requiring network access.

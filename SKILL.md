@@ -223,6 +223,21 @@ Runs `faster-whisper` on a downloaded audio file, auto-detects language by defau
 
 Prints a concise metadata summary from `metadata.json`, including title, uploader, duration, and publish date.
 
+## Verification
+
+Run the local smoke test after changing parsing or helper logic:
+
+```bash
+bash "$SKILL_DIR/tests/smoke_test.sh"
+```
+
+This verifies:
+
+- metadata parsing with a fixture
+- VTT normalization with timestamps
+- JSON3 normalization with timestamps
+- Python syntax for helper scripts
+
 ## Failure Modes
 
 - Bilibili blocks unauthenticated access: report the fetch failure and keep the exact error text.
