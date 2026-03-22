@@ -8,6 +8,8 @@ A Codex skill for fetching Bilibili video text and producing structured summarie
 - fetches metadata and available subtitles with `yt-dlp`
 - falls back to audio extraction and ASR when subtitles are missing
 - normalizes `.vtt`, `.srt`, and `.json3` subtitle files into clean transcript text
+- inspects `metadata.json` with a bundled helper script
+- transcribes downloaded audio with a bundled `faster-whisper` helper script
 - guides the agent to produce timestamp-aware summaries
 
 ## Repository Layout
@@ -19,7 +21,9 @@ A Codex skill for fetching Bilibili video text and producing structured summarie
 │   └── openai.yaml
 └── scripts/
     ├── fetch_bilibili_artifacts.sh
+    ├── inspect_metadata.py
     └── normalize_transcript.py
+    └── transcribe_audio.py
 ```
 
 ## Install
@@ -32,9 +36,10 @@ npx skills add https://github.com/marchtea/bilibili-summary-skill --skill bilibi
 
 - `yt-dlp`
 - `ffmpeg`
-- an ASR tool such as `whisper` when no subtitles are available
+- `python3`
+- `faster-whisper` in the active Python environment when no subtitles are available
 
 ## Notes
 
 - `danmaku.xml` is not treated as transcript text
-- ASR fallback is supported by workflow, but depends on a local ASR tool being available
+- ASR fallback is supported by workflow through `scripts/transcribe_audio.py`

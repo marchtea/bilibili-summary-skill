@@ -51,7 +51,7 @@ Check availability with:
 ```bash
 command -v yt-dlp
 command -v ffmpeg
-command -v whisper
+python3 --version
 ```
 
 If `yt-dlp` is missing, explain that the skill cannot fetch Bilibili content directly until it is installed.
@@ -102,15 +102,34 @@ If no subtitle file exists:
 - rerun fetch with audio enabled
 - transcribe only after confirming there is a local ASR tool or service path available
 
+Use the bundled ASR helper when `faster-whisper` is installed in the active Python environment:
+
+```bash
+python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/asr-transcript.txt
+```
+
 Example:
 
 ```bash
 bash "$SKILL_DIR/scripts/fetch_bilibili_artifacts.sh" "<bilibili-url>" /tmp/bili-job --with-audio
-whisper /tmp/bili-job/<audio-file> --model medium --language Chinese --output_dir /tmp/bili-job
-python3 "$SKILL_DIR/scripts/normalize_transcript.py" /tmp/bili-job/<asr-output-vtt> --output /tmp/bili-job/transcript.txt
+python3 "$SKILL_DIR/scripts/transcribe_audio.py" /tmp/bili-job/<audio-file> --output /tmp/bili-job/asr-transcript.txt
 ```
 
 If no ASR tool is available, stop and tell the user exactly which dependency is missing instead of pretending the transcript is complete.
+
+### 5.1 Inspect Metadata Before Summarizing
+
+Use the metadata helper to confirm title, uploader, duration, and publish date before writing the summary:
+
+```bash
+python3 "$SKILL_DIR/scripts/inspect_metadata.py" /tmp/bili-job/metadata.json
+```
+
+This is useful for:
+
+- checking whether the video topic matches the user request
+- surfacing the exact publish date in your answer when relevant
+- spotting whether the video is a guide, vlog, news clip, or repost before you summarize it
 
 ### 6. Produce The Summary
 
@@ -195,11 +214,20 @@ Fetches Bilibili metadata, subtitles, and optional audio into one directory.
 
 Turns `.vtt`, `.srt`, or `.json3` subtitle files into clean plain text, with optional timestamps.
 
+### `scripts/transcribe_audio.py`
+
+Runs `faster-whisper` on a downloaded audio file and writes a timestamped transcript.
+
+### `scripts/inspect_metadata.py`
+
+Prints a concise metadata summary from `metadata.json`, including title, uploader, duration, and publish date.
+
 ## Failure Modes
 
 - Bilibili blocks unauthenticated access: report the fetch failure and keep the exact error text.
 - `yt-dlp` is missing: stop and ask to install it.
 - no subtitles and no ASR available: state that transcript extraction is blocked.
+- `faster-whisper` is missing from the active Python environment: explain that ASR fallback cannot run yet.
 - only `danmaku.xml` exists: explain that it is comment overlay data, not transcript text, then switch to ASR fallback.
 - transcript quality is low: say whether the source was auto subtitles or ASR.
 
